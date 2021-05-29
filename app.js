@@ -44,7 +44,7 @@ bot.on("postback", async function (event) {
       event.reply(`結束時間: ${form.endTime}`);
       break;
     case "totalTime":
-      event.reply(getOffsetNowTime(form.startTime, form.endTime));
+      event.reply(`總時長：${getOffsetNowTime(form.startTime, form.endTime)}`);
       break;
     // 目的
     case "purpose":
@@ -61,7 +61,7 @@ bot.on("postback", async function (event) {
       form.purpose = event.postback.data.replace("purpose:", "");
       event.reply(`目的：${form.purpose}`);
       break;
-    case "purpose:錄音":
+    case "purpose:作品相關：錄音、混音、拍 MV":
       form.purpose = event.postback.data.replace("purpose:", "");
       event.reply(`目的：${form.purpose}`);
       break;
