@@ -127,7 +127,7 @@ exports.CAROUSEL_CONFIG = {
           },
           {
             type: "postback",
-            label: "顯示總共時間",
+            label: "總使用時長",
             data: "totalTime",
           },
         ],
@@ -193,4 +193,149 @@ exports.URL_CONFIG = {
     label: "Phone order",
     uri: "tel:09001234567",
   },
+};
+
+exports.getUrlConfig = (form) => {
+  return {
+    type: "flex",
+    altText: "this is a flex message",
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "text",
+            text: "登記資料",
+            weight: "bold",
+            size: "xl",
+            contents: [],
+          },
+          {
+            type: "separator",
+            margin: "sm",
+          },
+          {
+            type: "box",
+            layout: "vertical",
+            margin: "md",
+            spacing: "sm",
+            contents: [
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: "登記人：",
+                    color: "#aaaaaa",
+                    size: "sm",
+                    flex: 2,
+                  },
+                  {
+                    type: "text",
+                    text: form.signPerson,
+                    wrap: true,
+                    color: "#666666",
+                    size: "sm",
+                    flex: 5,
+                  },
+                ],
+              },
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: "使用目的：",
+                    color: "#aaaaaa",
+                    size: "sm",
+                    flex: 2,
+                  },
+                  {
+                    type: "text",
+                    text: form.purpose,
+                    wrap: true,
+                    color: "#666666",
+                    size: "sm",
+                    flex: 5,
+                  },
+                ],
+              },
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: "開始時間：",
+                    color: "#aaaaaa",
+                    size: "sm",
+                    flex: 2,
+                  },
+                  {
+                    type: "text",
+                    text: form.startTime,
+                    wrap: true,
+                    color: "#666666",
+                    size: "sm",
+                    flex: 5,
+                  },
+                ],
+              },
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: "結束時間：",
+                    color: "#aaaaaa",
+                    size: "sm",
+                    flex: 2,
+                  },
+                  {
+                    type: "text",
+                    text: form.endTime,
+                    wrap: true,
+                    color: "#666666",
+                    size: "sm",
+                    flex: 5,
+                  },
+                ],
+              },
+              {
+                type: "box",
+                layout: "baseline",
+                spacing: "sm",
+                contents: [
+                  {
+                    type: "text",
+                    text: "總時長：",
+                    color: "#aaaaaa",
+                    size: "sm",
+                    flex: 2,
+                  },
+                  {
+                    type: "text",
+                    text: form.totalTime,
+                    wrap: true,
+                    color: "#666666",
+                    size: "13px",
+                    flex: 5,
+                  },
+                ],
+              },
+            ],
+          },
+        ],
+      },
+    },
+  };
 };

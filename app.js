@@ -6,6 +6,8 @@ const {
   CAROUSEL_CONFIG,
   CONFIRM_CONFIG,
   URL_CONFIG,
+  FORM_CONFIG,
+  getUrlConfig,
 } = require("./src/messageAPI/config");
 const { bot } = require("./src/config");
 const moment = require("moment");
@@ -89,7 +91,7 @@ bot.on("postback", async function (event) {
         event
           .reply([`${response}\n以上問題尚未填寫\n請繼續填寫`, CAROUSEL_CONFIG])
           .then((res) => {
-            console.log("success");
+            console.log("success", res);
           })
           .catch((err) => {
             console.log("err", err);
@@ -122,29 +124,29 @@ bot.on("postback", async function (event) {
         for (data of emptyDataArr) {
           response += `${formDictionary[data]}\n`;
         }
-        const replyMessage = `登記人: ${
-          form.signPerson ? form.signPerson : "無"
-        }
-使用目的: ${form.purpose ? form.purpose : "無"}
-開始時間: ${form.startTime ? form.startTime : "無"}
-結束時間: ${form.endTime ? form.endTime : "無"} 
-時長: ${form.totalTime ? form.totalTime : "無"}`;
+        const FORM = {
+          signPerson: form.signPerson ? form.signPerson : "無",
+          purpose: form.purpose ? form.purpose : "無",
+          startTime: form.startTime ? form.startTime : "無",
+          endTime: form.endTime ? form.endTime : "無",
+          totalTime: form.totalTime ? form.totalTime : "無",
+        };
         event.reply([
           CAROUSEL_CONFIG,
-          `${replyMessage}\n\n尚有未填寫的問題，無法提交`,
+          `${getUrlConfig(FORM)}\n\n尚有未填寫的問題，無法提交`,
         ]);
 
         break;
       }
       await addSheetData(form).then((res) => {
-        const replyMessage = `登記人: ${
-          form.signPerson ? form.signPerson : "無"
-        }
-使用目的: ${form.purpose ? form.purpose : "無"}
-開始時間: ${form.startTime ? form.startTime : "無"}
-結束時間: ${form.endTime ? form.endTime : "無"} 
-時長: ${form.totalTime ? form.totalTime : "無"}`;
-        event.reply([replyMessage, "成功新增一筆使用紀錄！"]);
+        const FORM = {
+          signPerson: form.signPerson ? form.signPerson : "無",
+          purpose: form.purpose ? form.purpose : "無",
+          startTime: form.startTime ? form.startTime : "無",
+          endTime: form.endTime ? form.endTime : "無",
+          totalTime: form.totalTime ? form.totalTime : "無",
+        };
+        event.reply([getUrlConfig(FORM), "成功新增一筆使用紀錄！"]);
       });
       break;
     case "confirm:no":
@@ -152,13 +154,15 @@ bot.on("postback", async function (event) {
       break;
     case "showData":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
-      const replyMessage = `登記人: ${form.signPerson ? form.signPerson : "無"}
-使用目的: ${form.purpose ? form.purpose : "無"}
-開始時間: ${form.startTime ? form.startTime : "無"}
-結束時間: ${form.endTime ? form.endTime : "無"} 
-時長: ${form.totalTime ? form.totalTime : "無"}`;
+      const FORM = {
+        signPerson: form.signPerson ? form.signPerson : "無",
+        purpose: form.purpose ? form.purpose : "無",
+        startTime: form.startTime ? form.startTime : "無",
+        endTime: form.endTime ? form.endTime : "無",
+        totalTime: form.totalTime ? form.totalTime : "無",
+      };
       event
-        .reply(replyMessage)
+        .reply(getUrlConfig(FORM))
         .then((res) => {
           console.log("success", res);
         })
@@ -181,6 +185,16 @@ bot.on("message", function (event) {
         .reply(CAROUSEL_CONFIG)
         .then((res) => {
           console.log("success");
+        })
+        .catch((err) => {
+          console.log("err", err);
+        });
+      break;
+    case "測試":
+      event
+        .reply(FORM_CONFIG)
+        .then((res) => {
+          console.log("success", res);
         })
         .catch((err) => {
           console.log("err", err);
