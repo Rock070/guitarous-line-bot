@@ -184,7 +184,7 @@ bot.on("message", function (event) {
   switch (message) {
     case "冷氣登記表":
       event
-        .reply(IMAGE_CAROUSEL_CONFIG)
+        .reply(CAROUSEL_CONFIG)
         .then((res) => {
           console.log("success");
         })
@@ -194,7 +194,7 @@ bot.on("message", function (event) {
       break;
     case "還沒想到":
       event
-        .reply(CAROUSEL_CONFIG)
+        .reply("原來是還沒想到的部分")
         .then(function (data) {
           console.log("success", data);
           // 當訊息成功回傳後的處理
