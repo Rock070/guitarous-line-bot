@@ -61,7 +61,7 @@ bot.on("postback", async function (event) {
       form.purpose = event.postback.data.replace("purpose:", "");
       event.reply(`目的：${form.purpose}`);
       break;
-    case "purpose:作品相關：錄音、混音、拍 MV":
+    case "purpose:錄音、混音、拍 MV":
       form.purpose = event.postback.data.replace("purpose:", "");
       event.reply(`目的：${form.purpose}`);
       break;

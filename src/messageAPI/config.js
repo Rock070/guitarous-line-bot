@@ -146,8 +146,8 @@ exports.CAROUSEL_CONFIG = {
           },
           {
             type: "postback",
-            label: "作品相關：錄音、混音、拍 MV",
-            data: "purpose:作品相關：錄音、混音、拍 MV",
+            label: "錄音、混音、拍 MV",
+            data: "purpose:MV",
           },
           {
             type: "postback",
