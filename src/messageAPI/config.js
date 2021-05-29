@@ -112,11 +112,6 @@ exports.CAROUSEL_CONFIG = {
         imageBackgroundColor: "#FDC25D",
         title: "選擇時間",
         text: "使用冷氣的時間",
-        defaultAction: {
-          type: "uri",
-          label: "View detail",
-          uri: "http://example.com/page/123",
-        },
         actions: [
           {
             type: "datetimepicker",
@@ -143,11 +138,6 @@ exports.CAROUSEL_CONFIG = {
         imageBackgroundColor: "#FDC25D",
         title: "使用目的",
         text: "你使用錄音室來做什麼",
-        defaultAction: {
-          type: "uri",
-          label: "View detail",
-          uri: "http://example.com/page/222",
-        },
         actions: [
           {
             type: "postback",
@@ -172,11 +162,6 @@ exports.CAROUSEL_CONFIG = {
         imageBackgroundColor: "#FDC25D",
         title: "提交",
         text: "確定要提交嗎",
-        defaultAction: {
-          type: "uri",
-          label: "View detail",
-          uri: "http://example.com/page/222",
-        },
         actions: [
           {
             type: "postback",
@@ -198,5 +183,14 @@ exports.CAROUSEL_CONFIG = {
     ],
     imageAspectRatio: "square",
     imageSize: "contain",
+  },
+};
+
+exports.URL_CONFIG = {
+  type: "text",
+  action: {
+    type: "uri",
+    label: "Phone order",
+    uri: "tel:09001234567",
   },
 };

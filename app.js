@@ -5,6 +5,7 @@ const {
   IMAGE_CAROUSEL_CONFIG,
   CAROUSEL_CONFIG,
   CONFIRM_CONFIG,
+  URL_CONFIG,
 } = require("./src/messageAPI/config");
 const { bot } = require("./src/config");
 const moment = require("moment");
@@ -20,6 +21,12 @@ const form = {
 
 bot.on("postback", async function (event) {
   console.log(event);
+
+  // 抓使用者資料
+  await event.source.profile().then((res) => {
+    form.signPerson = res.displayName;
+  });
+
   switch (event.postback.data) {
     // 時間
     case "start":
@@ -96,12 +103,6 @@ bot.on("postback", async function (event) {
       break;
     // 確認提交
     case "confirm:yes":
-      // 抓取使用者名稱填入 form
-      if (!form.signPerson) {
-        await event.source.profile().then((res) => {
-          form.signPerson = res.displayName;
-        });
-      }
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
       // 待做驗證
       if (
@@ -151,12 +152,6 @@ bot.on("postback", async function (event) {
       break;
     case "showData":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
-      // 抓取使用者名稱填入 form
-      if (!form.signPerson) {
-        await event.source.profile().then((res) => {
-          form.signPerson = res.displayName;
-        });
-      }
       const replyMessage = `登記人: ${form.signPerson ? form.signPerson : "無"}
 使用目的: ${form.purpose ? form.purpose : "無"}
 開始時間: ${form.startTime ? form.startTime : "無"}
@@ -181,7 +176,7 @@ bot.on("message", function (event) {
   const message = event.message.text;
   const replyMsg = `Hello, 你剛剛說的是: ${message}`;
   switch (message) {
-    case "冷氣登記表":
+    case "我要登記":
       event
         .reply(CAROUSEL_CONFIG)
         .then((res) => {
@@ -189,18 +184,6 @@ bot.on("message", function (event) {
         })
         .catch((err) => {
           console.log("err", err);
-        });
-      break;
-    case "還沒想到":
-      event
-        .reply("原來是還沒想到的部分")
-        .then(function (data) {
-          console.log("success", data);
-          // 當訊息成功回傳後的處理
-        })
-        .catch(function (error) {
-          console.log("error:", error);
-          // 當訊息回傳失敗後的處理
         });
       break;
     default:
