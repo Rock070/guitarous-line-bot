@@ -18,13 +18,6 @@ const form = {
   remark: "還沒做",
 };
 
-// 初始化
-const init = () => {
-  console.log(getTime());
-};
-
-init();
-
 bot.on("postback", async function (event) {
   console.log(event);
   switch (event.postback.data) {
@@ -142,10 +135,16 @@ bot.on("postback", async function (event) {
 
         break;
       }
-      // 計算選取時間與現在的時間差)
-      event.reply(form);
-      console.log("add");
-      await addSheetData(form);
+      await addSheetData(form).then((res) => {
+        const replyMessage = `登記人: ${
+          form.signPerson ? form.signPerson : "無"
+        }
+使用目的: ${form.purpose ? form.purpose : "無"}
+開始時間: ${form.startTime ? form.startTime : "無"}
+結束時間: ${form.endTime ? form.endTime : "無"} 
+時長: ${form.totalTime ? form.totalTime : "無"}`;
+        event.reply([replyMessage, "成功新增一筆使用紀錄！"]);
+      });
       break;
     case "confirm:no":
       event.reply("取消提交");
