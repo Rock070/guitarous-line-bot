@@ -1,0 +1,25 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "@line/bot-sdk": "^7.3.0",
+    "google-spreadsheet": "^3.1.15",
+    "googleapis": "^39.2.0",
+    "linebot": "^1.6.1",
+    "moment": "^2.29.1",
+    "request": "^2.88.2",
+    "xhr": "^2.6.0"
+  },
+  "engines": {
+    "node": "14.x"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
