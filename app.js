@@ -1,5 +1,9 @@
 const { getTime, getOffsetNowTime, formDictionary } = require("./src/help");
-const { getSheetData, addSheetData } = require("./googleSheet.js");
+const {
+  getSheetData,
+  addSheetData,
+  isRepeatRowData,
+} = require("./googleSheet.js");
 const {
   PURPOSE_CONFIG,
   IMAGE_CAROUSEL_CONFIG,
@@ -21,8 +25,12 @@ const form = {
   remark: "還沒做",
 };
 
+let count = 30;
+let countUserID = [];
+
 bot.on("postback", async function (event) {
   console.log(event);
+  const userId = event.source.userId;
 
   // 抓使用者資料
   await event.source.profile().then((res) => {
@@ -69,44 +77,17 @@ bot.on("postback", async function (event) {
       form.purpose = event.postback.data.replace("purpose:", "");
       event.reply(`目的：${form.purpose}`);
       break;
-    // 提交
-    case "confirm":
-      if (
-        !form.startTime ||
-        !form.endTime ||
-        !form.totalTime ||
-        !form.purpose ||
-        !form.signPerson ||
-        !form.remark
-      ) {
-        const emptyDataArr = [];
-        for (data in form) {
-          if (data === "totalTime" || data === "signPerson") continue;
-          if (!form[data] && data) emptyDataArr.push(data);
-        }
-        let response = "";
-        for (data of emptyDataArr) {
-          response += `${formDictionary[data]}\n`;
-        }
-        event
-          .reply([`${response}\n以上問題尚未填寫\n請繼續填寫`, CAROUSEL_CONFIG])
-          .then((res) => {
-            console.log("success", res);
-          })
-          .catch((err) => {
-            console.log("err", err);
-          });
-        break;
-      }
-      // 計算選取時間與現在的時間差
-      form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
-      event.reply(form);
-      await addSheetData(form);
-      break;
     // 確認提交
     case "confirm:yes":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
-      // 待做驗證
+      // 驗證每個欄位是否都有值
+      const FORM = {
+        signPerson: form.signPerson ? form.signPerson : "無",
+        purpose: form.purpose ? form.purpose : "無",
+        startTime: form.startTime ? form.startTime : "無",
+        endTime: form.endTime ? form.endTime : "無",
+        totalTime: form.totalTime ? form.totalTime : "無",
+      };
       if (
         !form.startTime ||
         !form.endTime ||
@@ -124,28 +105,40 @@ bot.on("postback", async function (event) {
         for (data of emptyDataArr) {
           response += `${formDictionary[data]}\n`;
         }
-        const FORM = {
-          signPerson: form.signPerson ? form.signPerson : "無",
-          purpose: form.purpose ? form.purpose : "無",
-          startTime: form.startTime ? form.startTime : "無",
-          endTime: form.endTime ? form.endTime : "無",
-          totalTime: form.totalTime ? form.totalTime : "無",
-        };
+
         event.reply([
           CAROUSEL_CONFIG,
           `${getUrlConfig(FORM)}\n\n尚有未填寫的問題，無法提交`,
         ]);
-
         break;
       }
+      // 不可重複遞交資料
+      // if (count < 30) {
+      //   reply(`30 秒內不可重複遞出資料，還剩 ${conut} 秒`);
+      //   break;
+      // }
+
+      // function myfunc() {
+      //   count -= 1;
+      //   console.log(count);
+      // }
+      // const myInterval = setInterval(myfunc, 1000);
+      // function stopInterval() {
+      //   clearTimeout(myInterval);
+      //   count = 30;
+      // }
+      // setTimeout(stopInterval, 30000);
+
+      // 判斷是否有重複資料
+      // isRepeatRowData(form).then((res) => {
+      //   if (res === true) {
+      //     reply(`${getUrlConfig(FORM)}\n\n資料重複，已有此筆紀錄！`);
+      //     break;
+      //   }
+      // })
+
+      // 新增資料
       await addSheetData(form).then((res) => {
-        const FORM = {
-          signPerson: form.signPerson ? form.signPerson : "無",
-          purpose: form.purpose ? form.purpose : "無",
-          startTime: form.startTime ? form.startTime : "無",
-          endTime: form.endTime ? form.endTime : "無",
-          totalTime: form.totalTime ? form.totalTime : "無",
-        };
         event.reply([getUrlConfig(FORM), "成功新增一筆使用紀錄！"]);
       });
       break;
@@ -154,7 +147,7 @@ bot.on("postback", async function (event) {
       break;
     case "showData":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
-      const FORM = {
+      const FORM_VIEW = {
         signPerson: form.signPerson ? form.signPerson : "無",
         purpose: form.purpose ? form.purpose : "無",
         startTime: form.startTime ? form.startTime : "無",
@@ -162,7 +155,7 @@ bot.on("postback", async function (event) {
         totalTime: form.totalTime ? form.totalTime : "無",
       };
       event
-        .reply(getUrlConfig(FORM))
+        .reply(getUrlConfig(FORM_VIEW))
         .then((res) => {
           console.log("success", res);
         })
@@ -177,6 +170,7 @@ bot.on("postback", async function (event) {
 bot.on("message", function (event) {
   // event.message.text是使用者傳給bot的訊息
   // 使用event.reply(要回傳的訊息)方法可將訊息回傳給使用者
+  const userId = event.source.userId;
   const message = event.message.text;
   const replyMsg = `Hello, 你剛剛說的是: ${message}`;
   switch (message) {
@@ -191,14 +185,29 @@ bot.on("message", function (event) {
         });
       break;
     case "測試":
-      event
-        .reply(FORM_CONFIG)
-        .then((res) => {
-          console.log("success", res);
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
+      if (count < 30) {
+        event
+          .reply(`30 秒內不可再遞出資料，還剩 ${count} 秒`)
+          .then((res) => {
+            console.log("success", res);
+          })
+          .catch((err) => {
+            console.log("err", err);
+          });
+        break;
+      }
+      countUserID.push(userId);
+      function myfunc() {
+        count -= 1;
+        console.log(count);
+      }
+      const myInterval = setInterval(myfunc, 1000);
+      function stopInterval() {
+        clearTimeout(myInterval);
+        count = 30;
+        countUserID = countUserID.filter((item) => item !== userId);
+      }
+      setTimeout(stopInterval, 30000);
       break;
     default:
       event
