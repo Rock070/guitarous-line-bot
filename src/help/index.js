@@ -40,5 +40,4 @@ exports.formDictionary = {
   totalTime: "時長",
   purpose: "使用目的",
   signPerson: "登記人",
-  remark: "備註",
 };

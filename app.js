@@ -22,7 +22,6 @@ const form = {
   totalTime: "",
   purpose: "",
   signPerson: "",
-  remark: "還沒做",
 };
 const cache = {};
 
@@ -116,8 +115,7 @@ bot.on("postback", async function (event) {
         !form.endTime ||
         !form.totalTime ||
         !form.purpose ||
-        !form.signPerson ||
-        !form.remark
+        !form.signPerson
       ) {
         const emptyDataArr = [];
         for (data in form) {
