@@ -76,7 +76,6 @@ async function isRepeatRowData(form) {
   let headerRowNum = headerRow.length;
   for (row of rows) {
     if (row._rowNumber === 2) continue;
-    console.log(row.signPerson);
     let tempNum = 0;
     headerRow.forEach((item) => {
       if (row[item] === form[item]) {
@@ -90,11 +89,11 @@ async function isRepeatRowData(form) {
 
 // 用法
 // const form = {
-//   startTime: "2021-05-30 1:24",
-//   endTime: "2021-05-30 1:24",
+//   startTime: "2021-06-13 00:57",
+//   endTime: "2021-06-13 00:57",
 //   totalTime: "0 天, 0 小時, 0 分鐘, 0 秒",
-//   purpose: "錄音、混音、拍 MV",
-//   signPerson: "王建雄",
+//   purpose: "練習",
+//   signPerson: "茂己",
 //   remark: "還沒做",
 // };
 

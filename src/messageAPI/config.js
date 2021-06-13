@@ -41,7 +41,7 @@ exports.IMAGE_CAROUSEL_CONFIG = {
     type: "image_carousel",
     columns: [
       {
-        imageUrl: "https://example.com/bot/images/item1.jpg",
+        imageUrl: "https://i.imgur.com/XYa0p9u.png",
         action: {
           type: "datetimepicker",
           label: "選開始時間",
@@ -50,7 +50,7 @@ exports.IMAGE_CAROUSEL_CONFIG = {
         },
       },
       {
-        imageUrl: "https://example.com/bot/images/item2.jpg",
+        imageUrl: "https://i.imgur.com/oSCurWe.png",
         action: {
           type: "datetimepicker",
           label: "選結束時間",
@@ -107,8 +107,7 @@ exports.CAROUSEL_CONFIG = {
     type: "carousel",
     columns: [
       {
-        thumbnailImageUrl:
-          "https://lh3.googleusercontent.com/proxy/CduxbdsKh4hQUIiB4oEw7P6L24wbj92KRf1WJcwgeWXRUI7VPzHe8G9kqm03jxr-u7ykcc-a9Ufbiue0JA7lwka5sF6b5WjfvYMAhE4293ZTlheY1UtHD8wyWS6YWH_sAvhSjrtP_dnAC9Jl",
+        thumbnailImageUrl: "https://i.imgur.com/XYa0p9u.png",
         imageBackgroundColor: "#FDC25D",
         title: "選擇時間",
         text: "使用冷氣的時間",
@@ -133,8 +132,7 @@ exports.CAROUSEL_CONFIG = {
         ],
       },
       {
-        thumbnailImageUrl:
-          "https://lh3.googleusercontent.com/proxy/JDMsKFMvE5YWDJb300yfjRUCfK9JmeexClsBEOyI08a4tn4Hhcm5m1OUCiLR70pXSGOzG4fPI7K3wYMMlnpAqOnfgOD5s0qWmXrIhqacadUHTYi9r7XeHIi1IIw9s46JspGrXen_XTI0jiiW7iv5",
+        thumbnailImageUrl: "https://i.imgur.com/oSCurWe.png",
         imageBackgroundColor: "#FDC25D",
         title: "使用目的",
         text: "你使用錄音室來做什麼",

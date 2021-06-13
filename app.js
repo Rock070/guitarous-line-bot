@@ -24,12 +24,13 @@ const form = {
   signPerson: "",
   remark: "還沒做",
 };
+const cache = {};
 
 let count = 30;
 let countUserID = [];
 
 bot.on("postback", async function (event) {
-  console.log(event);
+  // console.log(event);
   const userId = event.source.userId;
 
   // 抓使用者資料
@@ -81,6 +82,28 @@ bot.on("postback", async function (event) {
     case "confirm:yes":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
       // 驗證每個欄位是否都有值
+
+      // 阻擋多次點擊按鈕：Cache 快取機制
+      const setCache = (name) => {
+        cache[name] = name;
+      };
+      const isInCache = (name) => {
+        return cache[name];
+      };
+      const clearCache = (name) => {
+        delete cache[name];
+      };
+      if (isInCache(form.signPerson)) {
+        event.reply("3 秒內不能重複送出答案！");
+        break;
+      }
+      setCache(form.signPerson);
+      setTimeout(() => {
+        clearCache(form.signPerson);
+      }, 3000);
+
+      // ------------------------------------------------------------
+
       const FORM = {
         signPerson: form.signPerson ? form.signPerson : "無",
         purpose: form.purpose ? form.purpose : "無",
@@ -105,37 +128,21 @@ bot.on("postback", async function (event) {
         for (data of emptyDataArr) {
           response += `${formDictionary[data]}\n`;
         }
-
-        event.reply([
-          CAROUSEL_CONFIG,
-          `${getUrlConfig(FORM)}\n\n尚有未填寫的問題，無法提交`,
-        ]);
+        event.reply([getUrlConfig(FORM), "尚有未填寫的問題，無法提交"]);
         break;
       }
-      // 不可重複遞交資料
-      // if (count < 30) {
-      //   reply(`30 秒內不可重複遞出資料，還剩 ${conut} 秒`);
-      //   break;
-      // }
-
-      // function myfunc() {
-      //   count -= 1;
-      //   console.log(count);
-      // }
-      // const myInterval = setInterval(myfunc, 1000);
-      // function stopInterval() {
-      //   clearTimeout(myInterval);
-      //   count = 30;
-      // }
-      // setTimeout(stopInterval, 30000);
 
       // 判斷是否有重複資料
-      // isRepeatRowData(form).then((res) => {
-      //   if (res === true) {
-      //     reply(`${getUrlConfig(FORM)}\n\n資料重複，已有此筆紀錄！`);
-      //     break;
-      //   }
-      // })
+      await isRepeatRowData(form)
+        .then((res) => {
+          if (res) {
+            event.reply([getUrlConfig(FORM), "試算表中已有此紀錄！"]);
+            return;
+          }
+        })
+        .catch((err) => {
+          console.log("is Repeat Error:", err);
+        });
 
       // 新增資料
       await addSheetData(form).then((res) => {
