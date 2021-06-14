@@ -41,3 +41,25 @@ exports.formDictionary = {
   purpose: "使用目的",
   signPerson: "登記人",
 };
+
+exports.getFee = (data) => {
+  if (!data) return "";
+  let totalHour = 0;
+  data.split(",").forEach((item, index) => {
+    const splitStr = item.split(" ");
+    if (!splitStr[0]) splitStr.shift();
+    const unit = splitStr[splitStr.length - 1];
+    switch (unit) {
+      case "天":
+        totalHour += Number(splitStr[0]) * 24;
+        break;
+      case "小時":
+        totalHour += Number(splitStr[0]);
+        break;
+      case "分鐘":
+        totalHour += parseFloat((Number(splitStr[0]) / 60).toFixed(2));
+        break;
+    }
+  });
+  return `${Math.round(totalHour * 5)} 元`;
+};

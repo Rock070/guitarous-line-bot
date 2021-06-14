@@ -1,4 +1,9 @@
-const { getTime, getOffsetNowTime, formDictionary } = require("./src/help");
+const {
+  getTime,
+  getOffsetNowTime,
+  formDictionary,
+  getFee,
+} = require("./src/help");
 const {
   getSheetData,
   addSheetData,
@@ -14,7 +19,7 @@ const {
   getUrlConfig,
 } = require("./src/messageAPI/config");
 const { bot } = require("./src/config");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 const form = {
   startTime: "",
@@ -22,6 +27,9 @@ const form = {
   totalTime: "",
   purpose: "",
   signPerson: "",
+  registerTime: "",
+  fee: "",
+  paymentStatus: "FALSE",
 };
 const cache = {};
 
@@ -80,6 +88,8 @@ bot.on("postback", async function (event) {
     // 確認提交
     case "confirm:yes":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
+      form.registerTime = moment(new Date()).format("YYYY-MM-DD HH:mm");
+      form.fee = getFee(form.totalTime);
       // 驗證每個欄位是否都有值
 
       // 阻擋多次點擊按鈕：Cache 快取機制

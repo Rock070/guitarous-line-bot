@@ -73,6 +73,7 @@ async function isRepeatRowData(form) {
   const rows = await sheet.getRows();
   const headerRow = rows[0]._sheet.headerValues;
   // 錯誤處理
+  console.log(headerRow);
   let headerRowNum = headerRow.length;
   for (row of rows) {
     if (row._rowNumber === 2) continue;
@@ -80,26 +81,32 @@ async function isRepeatRowData(form) {
     headerRow.forEach((item) => {
       if (row[item] === form[item]) {
         tempNum += 1;
+      } else {
+        console.log("row", item, row[item], typeof row[item]);
+        console.log("form", item, form[item], typeof form[item]);
       }
     });
+    console.log(tempNum);
     if (tempNum >= headerRowNum) return true;
   }
   return false;
 }
 
 // 用法
-// const form = {
-//   startTime: "2021-06-13 00:57",
-//   endTime: "2021-06-13 00:57",
-//   totalTime: "0 天, 0 小時, 0 分鐘, 0 秒",
-//   purpose: "練習",
-//   signPerson: "茂己",
-//   remark: "還沒做",
-// };
+const form = {
+  startTime: "2021-06-14 16:55",
+  endTime: "2021-06-14 16:55",
+  totalTime: "0 天, 0 小時, 0 分鐘, 0 秒",
+  purpose: "練習",
+  signPerson: "茂己",
+  registerTime: "2021-06-14 08:56",
+  fee: "0 元",
+  paymentStatus: "FALSE",
+};
 
-// isRepeatRowData(form).then((res) => {
-//   console.log(res);
-// });
+isRepeatRowData(form).then((res) => {
+  console.log(res);
+});
 
 module.exports = {
   getSheetAllData,
