@@ -88,7 +88,10 @@ bot.on("postback", async function (event) {
     // 確認提交
     case "confirm:yes":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
-      form.registerTime = moment(new Date()).format("YYYY-MM-DD HH:mm");
+      form.registerTime = moment
+        .utc(new Date())
+        .local()
+        .format("YYYY-MM-DD HH:mm");
       form.fee = getFee(form.totalTime);
       // 驗證每個欄位是否都有值
 
