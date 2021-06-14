@@ -79,15 +79,18 @@ async function isRepeatRowData(form) {
     if (row._rowNumber === 2) continue;
     let tempNum = 0;
     headerRow.forEach((item) => {
-      if (row[item] === form[item]) {
-        tempNum += 1;
-      } else {
-        console.log("row", item, row[item], typeof row[item]);
-        console.log("form", item, form[item], typeof form[item]);
+      if (item !== "registerTime" && item !== "paymentStatus") {
+        if (row[item] === form[item]) {
+          tempNum += 1;
+        } else {
+          console.log("row", item, row[item], typeof row[item]);
+          console.log("form", item, form[item], typeof form[item]);
+        }
       }
     });
     console.log(tempNum);
-    if (tempNum >= headerRowNum) return true;
+    // -2 減掉登記時間、繳費狀況
+    if (tempNum >= headerRowNum - 2) return true;
   }
   return false;
 }
