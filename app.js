@@ -146,7 +146,6 @@ bot.on("postback", async function (event) {
       // 判斷是否有重複資料
       await isRepeatRowData(form)
         .then((res) => {
-          console.log("isRepeat:", res);
           if (res) {
             event.reply([getUrlConfig(FORM), "試算表中已有此紀錄！"]);
             return;
@@ -158,8 +157,6 @@ bot.on("postback", async function (event) {
 
       // 新增資料
       await addSheetData(form).then((res) => {
-        console.log(form.registerTime);
-        console.log(form.fee);
         event.reply([getUrlConfig(FORM), "成功新增一筆使用紀錄！"]);
       });
       break;
