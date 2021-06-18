@@ -88,6 +88,7 @@ bot.on("postback", async function (event) {
     // 確認提交
     case "confirm:yes":
       form.totalTime = getOffsetNowTime(form.startTime, form.endTime);
+      moment.tz.setDefault("Asia/Taipei");
       form.registerTime = moment
         .utc(new Date())
         .local()
