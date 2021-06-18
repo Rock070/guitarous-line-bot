@@ -151,7 +151,7 @@ bot.on("postback", async function (event) {
             return;
           } else {
             // 新增資料
-            await addSheetData(form)
+            addSheetData(form)
               .then((res) => {
                 console.log("新增！");
                 event.reply([getUrlConfig(FORM), "成功新增一筆使用紀錄！"]);
@@ -164,7 +164,6 @@ bot.on("postback", async function (event) {
         .catch((err) => {
           console.log("is Repeat Error:", err);
         });
-
       break;
     case "confirm:no":
       event.reply("取消提交");
