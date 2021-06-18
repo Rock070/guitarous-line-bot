@@ -59,7 +59,7 @@ async function addSheetData(data) {
   await doc.useServiceAccountAuth(creds);
   await doc.loadInfo();
   const sheet = doc.sheetsById[sheetID];
-  await sheet.addRow(data);
+  return sheet.addRow(data);
 }
 
 // 判斷是否有重複資料

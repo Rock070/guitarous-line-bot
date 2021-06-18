@@ -156,9 +156,14 @@ bot.on("postback", async function (event) {
         });
 
       // 新增資料
-      await addSheetData(form).then((res) => {
-        event.reply([getUrlConfig(FORM), "成功新增一筆使用紀錄！"]);
-      });
+      await addSheetData(form)
+        .then((res) => {
+          console.log("新增！");
+          event.reply([getUrlConfig(FORM), "成功新增一筆使用紀錄！"]);
+        })
+        .catch((err) => {
+          console.log("新增失敗：", err);
+        });
       break;
     case "confirm:no":
       event.reply("取消提交");
