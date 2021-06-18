@@ -66,10 +66,8 @@ exports.getFee = (data) => {
   return `${Math.round(totalHour * 5)} 元`;
 };
 
-const getNowTime = () => {
+exports.getNowTime = () => {
   const stamp = new Date().getTime();
   const result = new Date(stamp + 8 * 60 * 60 * 1000);
   return moment.utc(new Date(result)).local().format("YYYY-MM-DD HH:mm");
 };
-
-console.log(getNowTime());
