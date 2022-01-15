@@ -29,7 +29,7 @@ const form = {
   purpose: "",
   signPerson: "",
   registerTime: "",
-  fee: "",
+  fee: 0,
   paymentStatus: "未繳費",
 };
 const cache = {};

@@ -63,7 +63,7 @@ exports.getFee = (data) => {
         break;
     }
   });
-  return `${Math.round(totalHour * 5)} 元`;
+  return Math.round(totalHour * 5);
 };
 
 exports.getNowTime = () => {
