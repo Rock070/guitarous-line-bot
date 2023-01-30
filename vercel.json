@@ -1,0 +1,24 @@
+{
+  "routes": [
+    {
+      "src": "/",
+      "dest": "api/users.js"
+    },
+    {
+      "src": "/users",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "dest": "api/users.js"
+    },
+    {
+      "src": "/linewebhook",
+      "methods": [
+        "GET",
+        "POST"
+      ],
+      "dest": "api/linewebhook.js"
+    }
+  ]
+}
