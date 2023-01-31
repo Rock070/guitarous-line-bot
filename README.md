@@ -35,3 +35,9 @@
   <img src="./public/介面四.jpeg" width="300" height="600" />
 
 </div>
+
+## 更新流程
+
+1. commit all change
+2. npm run build
+3. git push
