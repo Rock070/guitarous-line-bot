@@ -6,7 +6,6 @@
   "license": "ISC",
   "scripts": {
     "build": "rollup -c",
-    "deploy": "rollup -c && git push",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
