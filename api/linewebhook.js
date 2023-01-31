@@ -477,7 +477,6 @@ var cache = {};
 var count = 30;
 var countUserID = [];
 var main = function (req, res) {
-    // eslint-disable-next-line no-console
     console.log('req body.events:', req.body.events);
     // 用於辨識Line Channel的資訊
     var config = {
@@ -486,13 +485,11 @@ var main = function (req, res) {
         channelAccessToken: process.env.CHANNEL_ACCESS_TOKEN
     };
     var client = new lineBot.Client(config);
-    // client.replyMessage()
     function handleEvent(event) {
         var _this = this;
         if (!['text', 'message', 'postback'].includes(event.type))
             return Promise.resolve(null);
         var userId = event.source.userId;
-        // eslint-disable-next-line no-console
         console.log('userId: ', userId);
         // 當有人傳送訊息給Bot時
         var messageHandler = function (event) {
@@ -503,13 +500,10 @@ var main = function (req, res) {
                 case '我要登記': {
                     return client.replyMessage(event.replyToken, CAROUSEL_CONFIG)
                         .then(function (res) {
-                        // eslint-disable-next-line no-console
                         console.log('success');
                         return res;
                     })["catch"](function (err) {
-                        // eslint-disable-next-line no-console
                         console.log('err', err);
-                        return err;
                     });
                 }
                 case '測試': {
@@ -519,25 +513,22 @@ var main = function (req, res) {
                             text: "30 \u79D2\u5167\u4E0D\u53EF\u518D\u905E\u51FA\u8CC7\u6599\uFF0C\u9084\u5269 ".concat(count, " \u79D2")
                         })
                             .then(function (res) {
-                            // eslint-disable-next-line no-console
                             console.log('success', res);
                         })["catch"](function (err) {
-                            // eslint-disable-next-line no-console
                             console.log('err', err);
                         });
                     }
                     countUserID.push(userId);
-                    function myfunc() {
+                    var myfunc = function () {
                         count -= 1;
-                        // eslint-disable-next-line no-console
                         console.log(count);
-                    }
+                    };
                     var myInterval_1 = setInterval(myfunc, 1000);
-                    function stopInterval() {
+                    var stopInterval = function () {
                         clearTimeout(myInterval_1);
                         count = 30;
                         countUserID = countUserID.filter(function (item) { return item !== userId; });
-                    }
+                    };
                     setTimeout(stopInterval, 30000);
                     break;
                 }
@@ -550,8 +541,8 @@ var main = function (req, res) {
                         return data;
                         // 當訊息成功回傳後的處理
                     })["catch"](function (error) {
-                        return error;
                         // 當訊息回傳失敗後的處理
+                        console.log(error);
                     });
             }
         };
@@ -563,14 +554,11 @@ var main = function (req, res) {
                 switch (_c.label) {
                     case 0:
                         userId = (_b = event.source.userId) !== null && _b !== void 0 ? _b : '';
-                        // eslint-disable-next-line no-console
                         console.log('event.source: ', event.source);
                         // 抓使用者資料
                         return [4 /*yield*/, client.getProfile(userId).then(function (profile) {
                                 form.signPerson = profile.displayName;
-                                // eslint-disable-next-line no-console
                                 console.log(profile);
-                                // eslint-disable-next-line no-console
                                 console.log('form: ', form);
                             })];
                     case 1:
@@ -622,10 +610,8 @@ var main = function (req, res) {
                         }
                     case 5: return [2 /*return*/, client.replyMessage(event.replyToken, PURPOSE_CONFIG)
                             .then(function () {
-                            // eslint-disable-next-line no-console
                             console.log('success');
                         })["catch"](function (err) {
-                            // eslint-disable-next-line no-console
                             console.log('err', err);
                         })];
                     case 6:
@@ -678,7 +664,6 @@ var main = function (req, res) {
                             endTime: form.endTime ? form.endTime : '無',
                             totalTime: form.totalTime ? form.totalTime : '無'
                         };
-                        // eslint-disable-next-line no-console
                         console.log('FORM: ', FORM_1);
                         if (!form.startTime
                             || !form.endTime
@@ -709,7 +694,6 @@ var main = function (req, res) {
                                         // 新增資料
                                         return [4 /*yield*/, addSheetData(form)
                                                 .then(function () {
-                                                // eslint-disable-next-line no-console
                                                 console.log('新增！');
                                                 return client.replyMessage(event.replyToken, [
                                                     getUrlConfig(FORM_1), {
@@ -718,9 +702,7 @@ var main = function (req, res) {
                                                     },
                                                 ]);
                                             })["catch"](function (err) {
-                                                // eslint-disable-next-line no-console
                                                 console.log('新增失敗：', err);
-                                                return err;
                                             })];
                                         case 2:
                                             // 新增資料
@@ -730,9 +712,7 @@ var main = function (req, res) {
                                     }
                                 });
                             }); })["catch"](function (err) {
-                                // eslint-disable-next-line no-console
                                 console.log('is Repeat Error:', err);
-                                return err;
                             })];
                     case 10: 
                     // 判斷是否有重複資料
@@ -753,13 +733,10 @@ var main = function (req, res) {
                             };
                             return [2 /*return*/, client.replyMessage(event.replyToken, getUrlConfig(FORM_VIEW))
                                     .then(function (res) {
-                                    // eslint-disable-next-line no-console
                                     console.log('success', res);
                                     return res;
                                 })["catch"](function (err) {
-                                    // eslint-disable-next-line no-console
                                     console.log('err', err);
-                                    return err;
                                 })];
                         }
                     case 13: return [2 /*return*/, client.replyMessage(event.replyToken, CAROUSEL_CONFIG)];
@@ -773,7 +750,7 @@ var main = function (req, res) {
     }
     Promise.all(req.body.events.map(handleEvent))
         .then(function (result) { return res.json(result); })["catch"](function (err) {
-        return err;
+        console.log(err);
     });
 };
 

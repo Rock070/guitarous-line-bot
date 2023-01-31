@@ -15,7 +15,7 @@ export const getTime = () => {
   return new Date().toLocaleDateString('zh-tw', options)
 }
 
-export const getOffsetNowTime = (startTime, endTime) => {
+export const getOffsetNowTime = (startTime: string, endTime: string) => {
   if (!startTime && !endTime)
     return '尚未選擇時間'
   if (!startTime)
@@ -47,7 +47,7 @@ export const formDictionary = {
   signPerson: '登記人',
 }
 
-export const getFee = (data) => {
+export const getFee = (data: string) => {
   if (!data)
     return 0
   let totalHour = 0

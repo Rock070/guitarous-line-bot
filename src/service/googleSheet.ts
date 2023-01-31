@@ -1,4 +1,4 @@
-import type { GoogleSpreadsheetRow } from 'google-spreadsheet'
+import type { GoogleSpreadsheetRow, WorksheetBasicProperties } from 'google-spreadsheet'
 import { GoogleSpreadsheet } from 'google-spreadsheet'
 import dotenv from 'dotenv'
 
@@ -13,6 +13,11 @@ interface Form {
   paymentStatus: string
 }
 
+interface Row extends GoogleSpreadsheetRow {
+  _sheet: WorksheetBasicProperties
+  _rawData: Record<string, string>
+}
+
 dotenv.config()
 
 /**
@@ -25,7 +30,7 @@ const docID = '1a2nJqFHLXNP78Mq5QUKxuVpC1QmAmFw3c8xZ55gpH54'
 const sheetID = '0'
 
 export const getSheetAllData = async () => {
-  const result: GoogleSpreadsheetRow[] = []
+  const result: Record<string, string>[] = []
   const doc = new GoogleSpreadsheet(docID)
 
   await doc.useServiceAccountAuth({
@@ -34,7 +39,7 @@ export const getSheetAllData = async () => {
   })
   await doc.loadInfo()
   const sheet = doc.sheetsById[sheetID]
-  const rows = await sheet.getRows()
+  const rows = await sheet.getRows() as Row[]
   for (const row of rows) {
     console.log('row: ', row)
 
@@ -44,8 +49,8 @@ export const getSheetAllData = async () => {
   return result
 }
 // 輸入欄位名稱、值，可以搜尋到全部資料
-export const getSheetRowData = async (column, value) => {
-  const result: any[] = []
+export const getSheetRowData = async (column: string, value) => {
+  const result: Record<string, string>[] = []
   const doc = new GoogleSpreadsheet(docID)
 
   await doc.useServiceAccountAuth({
@@ -56,7 +61,7 @@ export const getSheetRowData = async (column, value) => {
   await doc.loadInfo()
   const sheet = doc.sheetsById[sheetID]
 
-  const rows = await sheet.getRows()
+  const rows = await sheet.getRows() as Row[]
   const headerRow = rows[0]._sheet.headerValues
   // 錯誤處理
   if (!headerRow.includes(column))
@@ -68,7 +73,7 @@ export const getSheetRowData = async (column, value) => {
   }
   if (result.length === 0)
     return '你輸入的值目前並沒有相關資料'
-  // eslint-disable-next-line no-console
+
   console.log(result)
   return result
 }
@@ -102,7 +107,7 @@ export const isRepeatRowData = async (form: Form) => {
   await doc.loadInfo()
   const sheet = doc.sheetsById[sheetID]
 
-  const rows = await sheet.getRows()
+  const rows = await sheet.getRows() as Row[]
   const headerRow = rows[0]._sheet.headerValues
   // 錯誤處理
   const headerRowNum = headerRow.length

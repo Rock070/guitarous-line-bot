@@ -1,8 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import lineBot from '@line/bot-sdk'
-import type { MessageEvent, PostbackEvent, WebhookEvent } from '@line/bot-sdk'
 import dotenv from 'dotenv'
 import moment from 'moment-timezone'
+import type { MessageEvent, PostbackEvent, WebhookEvent } from '@line/bot-sdk'
+import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 import {
   getFee,
@@ -34,13 +34,18 @@ const form = {
   paymentStatus: '未繳費',
 }
 
-const cache = {}
+const cache: Record<string, string> = {}
 
 let count = 30
 let countUserID: any[] = []
 
-const main = (req, res) => {
-  // eslint-disable-next-line no-console
+interface Req extends VercelRequest {
+  body: {
+    events: WebhookEvent[]
+  }
+}
+
+const main = (req: Req, res: VercelResponse) => {
   console.log('req body.events:', req.body.events)
 
   // 用於辨識Line Channel的資訊
@@ -51,13 +56,13 @@ const main = (req, res) => {
   }
 
   const client = new lineBot.Client(config)
-  // client.replyMessage()
+
   function handleEvent(event: WebhookEvent) {
     if (!['text', 'message', 'postback'].includes(event.type))
       return Promise.resolve(null)
 
     const userId = event.source.userId
-    // eslint-disable-next-line no-console
+
     console.log('userId: ', userId)
 
     // 當有人傳送訊息給Bot時
@@ -70,14 +75,11 @@ const main = (req, res) => {
         case '我要登記': {
           return client.replyMessage(event.replyToken, CAROUSEL_CONFIG)
             .then((res) => {
-              // eslint-disable-next-line no-console
               console.log('success')
               return res
             })
             .catch((err) => {
-              // eslint-disable-next-line no-console
               console.log('err', err)
-              return err
             })
         }
         case '測試': {
@@ -87,22 +89,20 @@ const main = (req, res) => {
               text: `30 秒內不可再遞出資料，還剩 ${count} 秒`,
             })
               .then((res) => {
-                // eslint-disable-next-line no-console
                 console.log('success', res)
               })
               .catch((err) => {
-                // eslint-disable-next-line no-console
                 console.log('err', err)
               })
           }
           countUserID.push(userId)
-          function myfunc() {
+          const myfunc = () => {
             count -= 1
-            // eslint-disable-next-line no-console
+
             console.log(count)
           }
           const myInterval = setInterval(myfunc, 1000)
-          function stopInterval() {
+          const stopInterval = () => {
             clearTimeout(myInterval)
             count = 30
             countUserID = countUserID.filter(item => item !== userId)
@@ -121,23 +121,23 @@ const main = (req, res) => {
               // 當訊息成功回傳後的處理
             })
             .catch((error) => {
-              return error
               // 當訊息回傳失敗後的處理
+              console.log(error)
             })
       }
     }
 
     const postbackHandler = async (event: PostbackEvent) => {
       const userId = event.source.userId ?? ''
-      // eslint-disable-next-line no-console
+
       console.log('event.source: ', event.source)
 
       // 抓使用者資料
       await client.getProfile(userId).then((profile) => {
         form.signPerson = profile.displayName
-        // eslint-disable-next-line no-console
+
         console.log(profile)
-        // eslint-disable-next-line no-console
+
         console.log('form: ', form)
       })
 
@@ -178,11 +178,9 @@ const main = (req, res) => {
         case 'purpose':
           return client.replyMessage(event.replyToken, PURPOSE_CONFIG)
             .then(() => {
-              // eslint-disable-next-line no-console
               console.log('success')
             })
             .catch((err) => {
-              // eslint-disable-next-line no-console
               console.log('err', err)
             })
         case 'purpose:練習':
@@ -213,13 +211,13 @@ const main = (req, res) => {
           // 驗證每個欄位是否都有值
 
           // 阻擋多次點擊按鈕：Cache 快取機制
-          const setCache = (name) => {
+          const setCache = (name: string) => {
             cache[name] = name
           }
-          const isInCache = (name) => {
+          const isInCache = (name: string) => {
             return cache[name]
           }
-          const clearCache = (name) => {
+          const clearCache = (name: string) => {
             delete cache[name]
           }
           if (isInCache(form.signPerson)) {
@@ -242,7 +240,7 @@ const main = (req, res) => {
             endTime: form.endTime ? form.endTime : '無',
             totalTime: form.totalTime ? form.totalTime : '無',
           }
-          // eslint-disable-next-line no-console
+
           console.log('FORM: ', FORM)
 
           if (
@@ -277,7 +275,6 @@ const main = (req, res) => {
                 // 新增資料
                 await addSheetData(form)
                   .then(() => {
-                    // eslint-disable-next-line no-console
                     console.log('新增！')
                     return client.replyMessage(event.replyToken, [
                       getUrlConfig(FORM), {
@@ -287,18 +284,13 @@ const main = (req, res) => {
                     ])
                   })
                   .catch((err) => {
-                    // eslint-disable-next-line no-console
                     console.log('新增失敗：', err)
-                    return err
                   })
               }
               return res
             })
             .catch((err) => {
-              // eslint-disable-next-line no-console
               console.log('is Repeat Error:', err)
-
-              return err
             })
         }
         case 'confirm:no':
@@ -317,14 +309,11 @@ const main = (req, res) => {
           }
           return client.replyMessage(event.replyToken, getUrlConfig(FORM_VIEW))
             .then((res) => {
-              // eslint-disable-next-line no-console
               console.log('success', res)
               return res
             })
             .catch((err) => {
-              // eslint-disable-next-line no-console
               console.log('err', err)
-              return err
             })
         }
       }
@@ -341,7 +330,7 @@ const main = (req, res) => {
   Promise.all(req.body.events.map(handleEvent))
     .then(result => res.json(result))
     .catch((err) => {
-      return err
+      console.log(err)
     })
 }
 
